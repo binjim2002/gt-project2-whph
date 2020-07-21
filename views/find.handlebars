@@ -1,0 +1,86 @@
+<form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" id="find-form">
+        <h1 class="text-2xl font-bold text-indigo-500">Welcome, {{user.firstName}} {{user.lastName}}</h1>
+        <h2>Find your partner</h2>
+        
+        <div class="mb-4">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+                Field of study
+            </label>
+            <div class="relative">
+                <select id="occupation-choice" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+                    {{#each occupations}}
+                    <option value="{{occupation}}">{{occupation}}</option>
+                    {{/each}}
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+                Favorite Game
+            </label>
+            <div class="relative">
+                <select id="game-choice" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+                    {{#each games}}
+                    <option value="{{name}}">{{name}}</option>
+                    {{/each}}
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
+            </div>
+        </div>
+    
+        <div class="flex items-center justify-between">
+            <button  class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                Find partner
+            </a>
+    
+        </div>
+    </form>
+   
+<table id="user-data" class="table-auto w-2/3 mx-auto">
+ {{!-- here be results --}}
+</table>
+
+<script>
+    const $ = document.getElementById.bind(document);
+    const occupationChoice = $('occupation-choice');
+    const gameChoice = $('game-choice');
+    const findForm = $('find-form');
+    const resultContainer = $('user-data');
+    
+    findForm.addEventListener('submit', ev => {
+        ev.preventDefault();
+        resultContainer.innerHTML = `
+        <thead>
+        <tr>
+            <th class="px-4 py-2">Occupation</th>
+            <th class="px-4 py-2">User</th>
+            <th class="px-4 py-2">Game</th>
+        </tr>
+        </thead>
+        `;
+        axios.get('/api/find').then(res => {
+            res.data.forEach(user => {
+                // for now:
+                user.occupation = occupationChoice.value;
+                user.game = gameChoice.value;
+                
+                resultContainer.innerHTML += template(user)
+            })
+        })
+    })
+
+    const template = data => `
+    <tr>
+        <td class="border px-4 py-2">${data.occupation}</td>
+        <td class="border px-4 py-2">${data.firstName} ${data.lastName} (${data.email})</td>
+        <td class="border px-4 py-2">${data.game}</td>
+    </tr>
+    
+    `;
+
+</script>
