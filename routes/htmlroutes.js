@@ -1,4 +1,4 @@
-const db = require("../models");
+const db = require("..");
 module.exports = function(app){
     //load index page
     app.get("/", async function(req, res){
