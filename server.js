@@ -2,6 +2,20 @@ const express = require("express");
 const session = require("express-session");
 const passport = require("./config/passport");
 
+let mysql = require("mysql");
+let connection;
+if(process.env.JAWSDB_URL){
+  connection = mysql.createConnection(process.env.JAWSDB_URL);
+}else{
+  connection = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "",
+    database: "whph"
+  });
+}
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
